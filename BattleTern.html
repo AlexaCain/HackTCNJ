@@ -3,6 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <script type="text/javascript" src="Contender.js"></script>
+<script src="base64.js" type="text/javascript"></script>
+<script src="getImage.js" type="text/javascript"></script>
 </head>
 <body>
 <style type="text/css">
@@ -31,8 +33,8 @@
 <script type="text/javascript">
 
 var startGame = false;
-var numCon1;
-var numCon2;
+var maxCon1;
+var maxCon2;
 var contenders = new Array();
 var width = window.innerWidth;
 var height = window.innerHeight;
@@ -40,39 +42,73 @@ var x1 = 0;
 var x2 = width - 50;
 var y1 = 50;
 var y2 = 50;
-var testCon = new Contender(50, 50, "tern.png", 1);
-var imgObj = new Image();
-imgObj.src = testCon.img;
-var imgTemp = "tern.png";
-
+var img1 = new Image();
+var img2 = new Image();
+var testCon;
 
 document.terms.start.onclick = function() {
+	var con1 = document.getElementById("search1").value;
+	var con2 = document.getElementById("search2").value;
+	var contender1 = searchFor(con1);
+	var file = contender1[1];
+	img1.src = file;
+	var contender2 = searchFor(con2);
+	file = contender2[1];
+	img2.src = file;
 
-con1 = document.getElementById("search1").value;
-con2 = document.getElementById("search2").value;
-numCon1 = 50;
-numCon2 = 100;
+	maxCon1 = parseInt(contender1[0]);
+	maxCon2 = parseInt(contender2[0]);
+	var ratio = (maxCon1 <= maxCon2) ?
+		Math.floor((maxCon1/(maxCon1+maxCon2))*100) :
+		Math.ceil((maxCon1/(maxCon1+maxCon2))*100);
+	maxCon1 = ratio;
+	maxCon2 = 100 - ratio;
 
-for(var i = 0; i < numCon1; i++){
+	var numCon1 = 0;
+	var numCon2 = 0;
+	for (var i = 0; i < 100; i++) {
+		if (Math.random() <= .5) {
+			var imgNum = Math.floor(Math.random() * 3 + 1);
+			var img = new Image();
+			img.src = contender1[imgNum];
+			contenders[i] = new Contender(x1, y1, img, 1);
+			y1 += 75;
+			if(y1 > (height - 50)){
+				x1 = x1 - 75;
+				y1 = 50;
+			}
+		} else {
+			var imgNum = Math.floor(Math.random() * 3 + 1);
+			var img = new Image();
+			img.src = contender2[imgNum];
+			contenders[i] = new Contender(x2, y2, img, 0);
+			y2 += 75;
+			if(y2 > (height - 50)){
+				x2 = x2 + 75;
+				y2 = 50;
+			}
+		};
+	};
 
-	contenders[i] = new Contender(x1, y1, imgTemp, 1);
-	y1 += 75;
-	if(y1 > (height - 50)){
-		x1 = x1 - 75;
-		y1 = 50;
-	} 
-}
-for(var j = numCon1; j < numCon2; j++){
-	contenders[j] = new Contender(x2, y2, imgTemp, 0);
-	y2 += 75;
-	if(y2 > (height - 50)){
-		x2 = x2 + 75;
-		y2 = 50;
-	} 
-}
+	// for(var i = 0; i < maxCon1; i++){
+	// 	contenders[i] = new Contender(x1, y1, img1, 1);
+	// 	y1 += 75;
+	// 	if(y1 > (height - 50)){
+	// 		x1 = x1 - 75;
+	// 		y1 = 50;
+	// 	}
+	// }
+	// for(var j = 0; j < maxCon2; j++){
+	// 	contenders[maxCon1 + j] = new Contender(x2, y2, img2, 0);
+	// 	y2 += 75;
+	// 	if(y2 > (height - 50)){
+	// 		x2 = x2 + 75;
+	// 		y2 = 50;
+	// 	} 
+	// }
 
-alert(con1 + " VS " + con2);
-startGame = true;
+	alert(con1 + " VS " + con2);
+	startGame = true;
 }
 
 
@@ -124,7 +160,6 @@ function draw() {
 	ctx.lineTo(width, 20);
 	ctx.strokeStyle = "black";
 	ctx.stroke();
-	console.log(startGame);
 	if(startGame){
 	/*var form = document.getElementById("terms");
 	var search1 = document.createElement(input);
@@ -133,13 +168,14 @@ function draw() {
 	//search1.setAttribute(style, testString);
     document.getElementById(form).appendChild(search1);*/
 	ctx.save;
+	
 	for(var k = 0; k < contenders.length; k++){
 		testCon = contenders[k];
-		ctx.drawImage(imgObj, testCon.x, testCon.y, testCon.imgSize, testCon.imgSize);
+		//console.log(testCon.imgVal);
+		ctx.drawImage(testCon.imgVal, testCon.x, testCon.y, testCon.imgSize, testCon.imgSize);
 		testCon.tick();
 	}
 	
-
 	ctx.restore;
 
 	}
