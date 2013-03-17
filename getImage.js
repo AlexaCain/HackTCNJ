@@ -1,6 +1,6 @@
 function searchFor (search) {
 	var xhr = new XMLHttpRequest();
-	var key = "NPf8kKlLvrh0otMoyP4UlqRnxV6e5mRlnVhY24FGqII=";
+	var key = "your key here!!";
 	var enckey = Base64.encode(key + ":" + key);
 
 	var url = "https://api.datamarket.azure.com/Data.ashx/Bing/Search/Composite?";
