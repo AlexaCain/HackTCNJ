@@ -1,6 +1,6 @@
 function searchFor (search) {
 	var xhr = new XMLHttpRequest();
-	var key = "YOUR KEY HERE";
+	var key = "NPf8kKlLvrh0otMoyP4UlqRnxV6e5mRlnVhY24FGqII=";
 	var enckey = Base64.encode(key + ":" + key);
 
 	var url = "https://api.datamarket.azure.com/Data.ashx/Bing/Search/Composite?";
@@ -23,7 +23,7 @@ function searchFor (search) {
 		// console.log(parsed.d.results[0].ImageTotal);
 		r[0] = parsed.d.results[0].ImageTotal;
 		var limit = (parsed.d.results[0].Image < 3) ? parsed.d.results[0].Image : 3;
-		console.dir(parsed);
+		// console.dir(parsed);
 		for (var i = 0; i < 3; i++) {
 			r[i+1] = parsed.d.results[0].Image[i].Thumbnail.MediaUrl;
 		};
