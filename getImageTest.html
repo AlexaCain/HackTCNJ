@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<script src="base64.js" type="text/javascript"></script>
+	<script src="getImage.js" type="text/javascript"></script>
+</head>
+<body>
+
+<script type="text/javascript">
+	var data = searchFor("potato");
+	document.write("There are " + data[0] + " results!</br>");
+	for (var i = 1; i < data.length; i++) {
+		var file = data[i];
+		var imgArea = document.createElement('img');
+		imgArea.src = file;
+		document.body.appendChild(imgArea);
+		console.log("Loaded image " + file);
+	};
+
+	// function errorHandler(e) {
+	// var msg = '';
+
+	// switch (e.code) {
+	// 	case FileError.QUOTA_EXCEEDED_ERR:
+	// 		msg = 'QUOTA_EXCEEDED_ERR';
+	// 		break;
+	// 	case FileError.NOT_FOUND_ERR:
+	// 		msg = 'NOT_FOUND_ERR';
+	// 		break;
+	// 	case FileError.SECURITY_ERR:
+	// 		msg = 'SECURITY_ERR';
+	// 		break;
+	// 	case FileError.INVALID_MODIFICATION_ERR:
+	// 		msg = 'INVALID_MODIFICATION_ERR';
+	// 		break;
+	// 	case FileError.INVALID_STATE_ERR:
+	// 		msg = 'INVALID_STATE_ERR';
+	// 		break;
+	// 	default:
+	// 		msg = 'Unknown Error';
+	// 		break;
+	//   };
+
+	//   console.log('Error: ' + msg);
+	// }
+
+	// function onInitFs(fs) {
+	// 	for (var i = 1; i < data.length; i++) {
+	// 		var file = data[i];
+
+	// 		fs.root.getFile(file, {}, function(fileEntry) {
+
+	// 		// Get a File object representing the file,
+	// 		// then use FileReader to read its contents.
+	// 		fileEntry.file(function(file) {
+	// 		   var reader = new FileReader();
+
+	// 		   reader.onloadend = function(e) {
+	// 			 var imgArea = document.createElement('img');
+	// 			 imgArea.value = this.result;
+	// 			 document.body.appendChild(imgArea);
+	// 		   };
+
+	// 		   reader.readAsText(file);
+	// 		}, errorHandler);
+
+	// 		}, errorHandler);
+	// 	};
+	// }
+	// window.requestFileSystem = window.requestFileSystem || window.webkitRequestFileSystem;
+	// window.requestFileSystem(window.TEMPORARY, 1024*1024, onInitFs, errorHandler);
+	
+</script>
+
+</body>
+</html>
