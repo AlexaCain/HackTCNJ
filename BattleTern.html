@@ -23,9 +23,9 @@
 
 <form name="terms" action="#" onSubmit="parseVals(search1.value, search2.value);">
 	<div class="c1"><label>Contender 1:<input type="text" id="search1" name="search1"></label>
-	<br><input type="text" id="numLeft1" value=""></br></div>
+	<br><label>Team 1 Remaining:<input type="text" id="numLeft1" value="" size="2" disabled></label></br></div>
 	<div class="c2"><label>Contender 2:<input type="text" id="search2" name="search2"></label>
-	<br><input type="text" id="numLeft2" value=""></br></div>
+	<br><label>Team 2 Remaining:<input type="text" id="numLeft2" value="" size="2" disabled></label></br></div>
 	<div class="start"><input type="button" id ="start" name="start" value="Start!"/></div>
 </form>
 
@@ -226,7 +226,6 @@ function draw() {
 					} else {
 						currCon2 -= 1;
 					}
-					console.log("1: " + currCon1 + "\t2: " + currCon2);
 				};
 			};
 		}

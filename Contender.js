@@ -46,7 +46,6 @@ Contender.prototype.tick = function () {
 }
 
 Contender.prototype.ow = function() {
-	console.log("Still hit");
 	this.health -= 5;
 	if(this.health <= 0)
 		this.alive = false;
