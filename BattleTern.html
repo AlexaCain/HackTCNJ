@@ -1,0 +1,152 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta charset="UTF-8">
+<script type="text/javascript" src="Contender.js"></script>
+</head>
+<body>
+<style type="text/css">
+
+	.start {
+		margin: 0 0 0 49%; 
+	}
+	.c1 {
+	float:left;
+	}
+	.c2 {
+		float:right; 
+	}
+
+</style>
+
+<form name="terms" action="#" onSubmit="parseVals(search1.value, search2.value);">
+	<div class="c1"><label>Contender 1:<input type="text" id="search1" name="search1"></label></div>
+	<div class="c2"><label>Contender 2:<input type="text" id="search2" name="search2"></label></div>
+	<div class="start"><input type="button" id ="start" name="start" value="Start!"/></div>
+</form>
+
+<canvas id="battlefield">
+
+</canvas>
+<script type="text/javascript">
+
+var startGame = false;
+var numCon1;
+var numCon2;
+var contenders = new Array();
+var width = window.innerWidth;
+var height = window.innerHeight;
+var x1 = 0;
+var x2 = width - 50;
+var y1 = 50;
+var y2 = 50;
+var testCon = new Contender(50, 50, "tern.png", 1);
+var imgObj = new Image();
+imgObj.src = testCon.img;
+var imgTemp = "tern.png";
+
+
+document.terms.start.onclick = function() {
+
+con1 = document.getElementById("search1").value;
+con2 = document.getElementById("search2").value;
+numCon1 = 50;
+numCon2 = 100;
+
+for(var i = 0; i < numCon1; i++){
+
+	contenders[i] = new Contender(x1, y1, imgTemp, 1);
+	y1 += 75;
+	if(y1 > (height - 50)){
+		x1 = x1 - 75;
+		y1 = 50;
+	} 
+}
+for(var j = numCon1; j < numCon2; j++){
+	contenders[j] = new Contender(x2, y2, imgTemp, 0);
+	y2 += 75;
+	if(y2 > (height - 50)){
+		x2 = x2 + 75;
+		y2 = 50;
+	} 
+}
+
+alert(con1 + " VS " + con2);
+startGame = true;
+}
+
+
+
+// requestAnim shim layer by Paul Irish
+    window.requestAnimFrame = (function(){
+      return  window.requestAnimationFrame       || 
+              window.webkitRequestAnimationFrame || 
+              window.mozRequestAnimationFrame    || 
+              window.oRequestAnimationFrame      || 
+              window.msRequestAnimationFrame     || 
+              function(/* function */ callback, /* DOMElement */ element){
+                window.setTimeout(callback, 1000 / 60);
+              };
+    })();
+  
+// tutorial followed from : http://paulirish.com/2011/requestanimationframe-for-smart-animating/
+// example code from mr doob : http://mrdoob.com/lab/javascript/requestanimationframe/
+var canvas, ctx;
+
+init();
+animate();
+
+function init() {
+
+	canvas = document.getElementById("battlefield");
+	canvas.width  = width;
+	canvas.height = height;
+	
+	ctx = canvas.getContext("2d");
+}
+
+function animate() {
+    requestAnimFrame( animate );
+    draw();
+
+}
+
+function draw() {
+	ctx.clearRect(0, 0, width, height);
+
+	ctx.moveTo((width/2), 25);
+	ctx.lineTo((width/2), height);
+	ctx.strokeStyle = "red";
+	ctx.stroke();
+	
+	ctx.beginPath();
+	ctx.moveTo(0, 20);
+	ctx.lineTo(width, 20);
+	ctx.strokeStyle = "black";
+	ctx.stroke();
+	console.log(startGame);
+	if(startGame){
+	/*var form = document.getElementById("terms");
+	var search1 = document.createElement(input);
+    search1.type = "text";
+	var testString = "position:absolute; left=)" + (width/3) + ";" 
+	//search1.setAttribute(style, testString);
+    document.getElementById(form).appendChild(search1);*/
+	ctx.save;
+	for(var k = 0; k < contenders.length; k++){
+		testCon = contenders[k];
+		ctx.drawImage(imgObj, testCon.x, testCon.y, testCon.imgSize, testCon.imgSize);
+		testCon.tick();
+	}
+	
+
+	ctx.restore;
+
+	}
+}
+
+</script>
+
+
+</body>
+</html> 
