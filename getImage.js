@@ -23,7 +23,7 @@ function searchFor (search) {
 		// console.log(parsed.d.results[0].ImageTotal);
 		r[0] = parsed.d.results[0].ImageTotal;
 		var limit = (parsed.d.results[0].Image < 3) ? parsed.d.results[0].Image : 3;
-		console.dir(parsed);
+		// console.dir(parsed);
 		for (var i = 0; i < 3; i++) {
 			r[i+1] = parsed.d.results[0].Image[i].Thumbnail.MediaUrl;
 		};

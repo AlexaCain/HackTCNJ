@@ -3,6 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <script type="text/javascript" src="Contender.js"></script>
+<script src="base64.js" type="text/javascript"></script>
+<script src="getImage.js" type="text/javascript"></script>
 </head>
 <body>
 <style type="text/css">
@@ -20,8 +22,10 @@
 </style>
 
 <form name="terms" action="#" onSubmit="parseVals(search1.value, search2.value);">
-	<div class="c1"><label>Contender 1:<input type="text" id="search1" name="search1"></label></div>
-	<div class="c2"><label>Contender 2:<input type="text" id="search2" name="search2"></label></div>
+	<div class="c1"><label>Contender 1:<input type="text" id="search1" name="search1"></label>
+	<br><input type="text" id="numLeft1" value=""></br></div>
+	<div class="c2"><label>Contender 2:<input type="text" id="search2" name="search2"></label>
+	<br><input type="text" id="numLeft2" value=""></br></div>
 	<div class="start"><input type="button" id ="start" name="start" value="Start!"/></div>
 </form>
 
@@ -31,8 +35,8 @@
 <script type="text/javascript">
 
 var startGame = false;
-var numCon1;
-var numCon2;
+var maxCon1, currCon1;
+var maxCon2, currCon2;
 var contenders = new Array();
 var width = window.innerWidth;
 var height = window.innerHeight;
@@ -40,39 +44,69 @@ var x1 = 0;
 var x2 = width - 50;
 var y1 = 50;
 var y2 = 50;
-var testCon = new Contender(50, 50, "tern.png", 1);
-var imgObj = new Image();
-imgObj.src = testCon.img;
-var imgTemp = "tern.png";
-
+var testCon;
+var con1, con2;
 
 document.terms.start.onclick = function() {
 
-con1 = document.getElementById("search1").value;
-con2 = document.getElementById("search2").value;
-numCon1 = 50;
-numCon2 = 100;
+	x1 = 0;
+	x2 = width - 50;
+	y1 = 50;
+	y2 = 50;
+	con1 = document.getElementById("search1").value;
+	con2 = document.getElementById("search2").value;
+	var contender1 = searchFor(con1);
+	var contender2 = searchFor(con2);
 
-for(var i = 0; i < numCon1; i++){
+	maxCon1 = parseInt(contender1[0]);
+	maxCon2 = parseInt(contender2[0]);
+	var ratio = (maxCon1 <= maxCon2) ?
+		Math.floor((maxCon1/(maxCon1+maxCon2))*100) :
+		Math.ceil((maxCon1/(maxCon1+maxCon2))*100);
+	maxCon1 = ratio;
+	maxCon2 = 100 - ratio;
 
-	contenders[i] = new Contender(x1, y1, imgTemp, 1);
-	y1 += 75;
-	if(y1 > (height - 50)){
-		x1 = x1 - 75;
-		y1 = 50;
-	} 
-}
-for(var j = numCon1; j < numCon2; j++){
-	contenders[j] = new Contender(x2, y2, imgTemp, 0);
-	y2 += 75;
-	if(y2 > (height - 50)){
-		x2 = x2 + 75;
-		y2 = 50;
-	} 
-}
+	var numCon1 = 0;
+	var numCon2 = 0;
+	for (var i = 0; i < 100; i++) {
+		var r = Math.random();
+		if (r <= .5) {
+			if (numCon1 >= maxCon1) {
+				i--;
+				continue;
+			}
+			var imgNum = Math.floor(Math.random() * 3 + 1);
+			var img = new Image();
+			img.src = contender1[imgNum];
+			contenders[i] = new Contender(x1, y1, img, 1);
+			y1 += 75;
+			if(y1 > (height - 50)){
+				x1 = x1 - 75;
+				y1 = 50;
+			}
+			numCon1++;
+		} else {
+			if (numCon2 > maxCon2) {
+				i--;
+				continue;
+			}
+			var imgNum = Math.floor(Math.random() * 3 + 1);
+			var img = new Image();
+			img.src = contender2[imgNum];
+			contenders[i] = new Contender(x2, y2, img, 0);
+			y2 += 75;
+			if(y2 > (height - 50)){
+				x2 = x2 + 75;
+				y2 = 50;
+			}
+			numCon2++;
+		};
+	};
 
-alert(con1 + " VS " + con2);
-startGame = true;
+	alert(con1 + " VS " + con2);
+	currCon1 = maxCon1;
+	currCon2 = maxCon2;
+	startGame = true;
 }
 
 
@@ -103,6 +137,9 @@ function init() {
 	canvas.height = height;
 	
 	ctx = canvas.getContext("2d");
+
+	// currCon1 = maxCon1;
+	// currCon2 = maxCon2;
 }
 
 function animate() {
@@ -124,25 +161,99 @@ function draw() {
 	ctx.lineTo(width, 20);
 	ctx.strokeStyle = "black";
 	ctx.stroke();
-	console.log(startGame);
 	if(startGame){
-	/*var form = document.getElementById("terms");
-	var search1 = document.createElement(input);
-    search1.type = "text";
-	var testString = "position:absolute; left=)" + (width/3) + ";" 
-	//search1.setAttribute(style, testString);
-    document.getElementById(form).appendChild(search1);*/
-	ctx.save;
-	for(var k = 0; k < contenders.length; k++){
-		testCon = contenders[k];
-		ctx.drawImage(imgObj, testCon.x, testCon.y, testCon.imgSize, testCon.imgSize);
-		testCon.tick();
-	}
+		/*var form = document.getElementById("terms");
+		var search1 = document.createElement(input);
+	    search1.type = "text";
+		var testString = "position:absolute; left=)" + (width/3) + ";" 
+		//search1.setAttribute(style, testString);
+	    document.getElementById(form).appendChild(search1);*/
+		ctx.save;
+
+		if (currCon1 <= 0) {
+			if(con2 == "lamp"){
+				alert("lamp lamp lamp lamp lamp \n lamp lamp lamp lamp lamp lamp lamp \n lamp lamp lamp lamp lamp.");
+				startGame = false
+			}
+			else{	
+			alert(con2 + phrase());
+			startGame = false;
+			}
+			return;
+		};
+		if (currCon2 <= 0) {
+			if(con1 == "lamp"){
+				alert("lamp lamp lamp lamp lamp \n lamp lamp lamp lamp lamp lamp lamp \n lamp lamp lamp lamp lamp.");
+				startGame = false;
+			}
+			else{
+			alert(con1 + phrase());
+			startGame = false;
+			}
+			return;
+		};
+		
+		for(var k = 0; k < contenders.length; k++){
+			testCon = contenders[k];
+			//console.log(testCon.imgVal);
+			if (testCon.alive) {
+				ctx.drawImage(testCon.imgVal, testCon.x, testCon.y, testCon.imgSize, testCon.imgSize);
+				testCon.tick();
+				if(testCon.size == 3){
+					if ((Math.abs((testCon.x + testCon.center) - (canvas.width/2)) <= 55)){
+						if(testCon.side == 1){
+							if(Math.random() + (currCon2 / 100.0) > .75) 
+							testCon.ow();
+						} else if(testCon.side == 0){
+						if(Math.random() + (currCon1 / 100.0) > .75) 
+						testCon.ow();
+					}
+					}
+				} else{
+				if ((Math.abs((testCon.x + testCon.center) - (canvas.width/2)) <= 25)){
+					if(testCon.side == 1){
+						if(Math.random() + (currCon2 / 100.0) > .75) 
+						testCon.ow();
+					} else if(testCon.side == 0){
+						if(Math.random() + (currCon1 / 100.0) > .75) 
+						testCon.ow();
+					}
+				}
+				}
+				if (!testCon.alive) {
+					if (testCon.side == 1) {
+						currCon1 -= 1;
+					} else {
+						currCon2 -= 1;
+					}
+					console.log("1: " + currCon1 + "\t2: " + currCon2);
+				};
+			};
+		}
 	
-
 	ctx.restore;
-
+	document.getElementById("numLeft1").value = currCon1;
+	document.getElementById("numLeft2").value = currCon2;
 	}
+}
+
+var phrase = function() {
+
+var num = Math.floor(Math.random()*6);
+
+if(num == 0)
+	return " is winner!!";
+if(num == 1)
+	return " is true victor!";
+if(num == 2)
+	return " wins!";
+if(num == 3)
+	return " has proven itself.";
+if(num == 4)
+	return " : CHAMPION!!!";
+if(num == 5)
+	return " can commence celebration!";
+
 }
 
 </script>
